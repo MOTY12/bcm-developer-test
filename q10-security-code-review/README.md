@@ -4,13 +4,12 @@ The claim is unsafe. Hiding a browser button changes only the user interface; a 
 
 ## Required Server-Side Checks
 
-- Accept the expected HTTP method and content type only.
-- Authenticate the request and verify the WordPress REST nonce for a cookie-authenticated browser request. A nonce helps prevent CSRF but does not replace capability checks.
-- Validate and normalise the article ID, then confirm that it resolves to an allowed post type.
-- Validate the requested status against an explicit allow-list and allowed transition rules; never pass arbitrary browser input into `post_status`.
-- Check the mapped capability for this specific post with `current_user_can('edit_post', $postId)`. For transitions that publish or make content private, require the appropriate publishing/private-post capability too.
-- Use a revision or last-modified value when concurrent editing matters, and return a conflict rather than overwriting a newer edit.
-- Perform the update through WordPress APIs, check `WP_Error`, and create an audit entry with the actor, post ID, old/new status, and request correlation ID.
+- Authentication: Confirm that the request comes from a logged-in user.
+- Nonce verification: Verify a WordPress nonce to protect against CSRF attacks.
+- Input validation: Validate that the article ID is a positive integer and the requested status is valid.
+- Permission check: Use current_user_can('edit_post', $post_id) to confirm the user can edit that specific article.
+- Status transition validation: Check that the requested status transition is permitted and that the user has any additional capabilities required for it.
+- Safe update: Update the post using WordPress functions and handle any errors returned.
 
 ## Pseudocode
 
