@@ -63,3 +63,4 @@ function update_article_status(WP_REST_Request $request): WP_REST_Response|WP_Er
 I would raise this in the review as a factual security issue: “The button visibility is client-side only, so it does not protect the endpoint from direct requests. This route needs object-level capability checks, CSRF protection for browser sessions, status allow-listing, and negative tests before it can be released.”
 
 Before release, the endpoint must enforce those server-side checks, reject the two negative cases above, handle update failures safely, and have reviewable tests proving that unauthorised users cannot alter any article status.
+
